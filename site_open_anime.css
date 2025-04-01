@@ -1,0 +1,130 @@
+/* ============================================= */
+/* === 基本スタイル & PC向けスタイル === */
+/* ============================================= */
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    /* モーダル表示中はスクロールさせない */
+    overflow: hidden;
+    /* 背景色や文字色など、サイト全体の基本スタイルをここに追加してもOK */
+    /* background-color: #f4f4f4; */
+    /* color: #333; */
+}
+
+/* --- モーダル --- */
+#modal-overlay {
+    position: fixed; /* 画面に固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black; /* 不透明な黒 */
+    display: flex; /* 文字を中央揃えにするため */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* 他の要素より手前に表示 */
+    opacity: 1; /* 初期状態は表示 */
+    transition: opacity 1s ease-out; /* フェードアウトのアニメーション (1秒かけて変化) */
+    pointer-events: auto; /* モーダルが表示されている間は下の要素をクリックできないようにする */
+    /* スマホで文字が見切れないように左右に少しパディングを追加 */
+    box-sizing: border-box; /* パディングを含めて幅100%にする */
+    padding: 0 1rem;
+}
+
+#modal-content {
+    color: white;
+    /* デフォルト（PCなど）の文字サイズ */
+    font-size: 4rem; /* remはルート要素(html)のフォントサイズ基準 */
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap; /* 文字列が長くても改行させない */
+}
+
+/* --- 文字アニメーション用 --- */
+#modal-content span {
+    opacity: 0; /* 初期状態は透明 */
+    display: inline-block; /* アニメーションのため & 空白文字のスペース確保 */
+    /* アニメーション定義: 名前 時間 イージング 遅延 繰り返し 方向 状態 */
+    animation: fadeInChar 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+    /* animation-delay は JavaScript側で設定 */
+}
+
+/* 文字がフェードインして少し上に移動するアニメーション */
+@keyframes fadeInChar {
+    0% {
+        opacity: 0;
+        transform: translateY(20px); /* 少し下から */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* 本来の位置へ */
+    }
+}
+
+/* --- モーダルの制御クラス --- */
+/* モーダルのフェードアウト用クラス */
+#modal-overlay.fade-out {
+    opacity: 0; /* 透明にする */
+    pointer-events: none; /* フェードアウト後はクリックイベントを透過させる */
+}
+
+/* モーダル非表示用クラス */
+#modal-overlay.hidden {
+    display: none; /* DOM要素として存在はするが、描画されなくなる */
+}
+
+/* --- 本文のスクロール制御 --- */
+/* モーダル非表示後にbodyのスクロールを許可 */
+body.modal-hidden {
+    overflow: auto; /* スクロールを元に戻す */
+}
+
+
+/* ============================================= */
+/* === スマートフォン向けのスタイル調整 (メディアクエリ) === */
+/* ============================================= */
+
+/* 画面幅が 768px 以下の場合に適用 (タブレットや大きめのスマホ) */
+@media screen and (max-width: 768px) {
+    #modal-content {
+        /* スマートフォンでは文字サイズを少し小さくする */
+        font-size: 3rem; /* 4rem -> 3rem */
+    }
+
+    /* 必要であればアニメーションの移動距離なども調整 */
+    /*
+    @keyframes fadeInChar {
+        0% {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    */
+}
+
+/* 画面幅が 480px 以下の場合に適用 (一般的なスマホ) */
+@media screen and (max-width: 480px) {
+    #modal-content {
+        /* さらに文字サイズを小さくする */
+        font-size: 2rem; /* 3rem -> 2rem */
+    }
+
+    /* 必要であればモーダルの左右パディングも調整 */
+    /*
+    #modal-overlay {
+        padding: 0 0.5rem;
+    }
+    */
+
+     /* もし文字が長すぎて画面からはみ出す場合は、改行を許可する */
+    /*
+    #modal-content {
+        white-space: normal;
+    }
+    */
+}
